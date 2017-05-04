@@ -7,15 +7,6 @@ export TMPDIR=${TMPDIR:-/tmp}
 payload=$TMPDIR/multi-commit-resource
 cat > $payload <&0
 
-VERSION="000AAA"
-
-echo "Check: ENV"
-env
-echo "Check: ENV"
-
-echo "Check:" $VERSION
-echo "Check:" $(cat $payload)
-
-data="[ { \"ref\" : \"$VERSION\" } ]"
+data="[ { \"ref\" : \"000000\" } ]"
 
 echo $data >&3

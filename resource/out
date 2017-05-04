@@ -1,54 +1,22 @@
 #!/bin/sh
 
-# When someone does a check, we always have a new version
 exec 3>&1
 exec 1>&2
 
-destination=$1
+output_dir=$1
 
-if [ -z "$destination" ]; then
-  echo "usage: $0 <path/to/destination>" >&2
+if [ -z "$output_dir" ]; then
+  echo "usage: $0 <output-directory>" >&2
   exit 1
 fi
 
-mkdir -p $destination
+mkdir -p $output_dir
 
-export VERSION="000AAA"
 export BUILD_URL=$ATC_EXTERNAL_URL"/teams/"$BUILD_TEAM_NAME"/pipelines/"$BUILD_PIPELINE_NAME"/jobs/"$BUILD_JOB_NAME"/builds/"$BUILD_ID
 
-echo "Out: ENV"
-env
-echo "Out: ENV"
-
-echo "Out: destination:" $destination " version:" $VERSION " ::"
-
 data="{                                                            \
-        \"version\" : { \"ref\" : \"$VERSION\" },                  \
+        \"version\" : { \"ref\" : \"000000\" },                    \
         \"metadata\" : [                                           \
-                         {                                         \
-                           \"name\" : \"BUILD_TEAM_NAME\",         \
-                           \"value\" : \"$BUILD_TEAM_NAME\"        \
-                         },                                        \
-                         {                                         \
-                           \"name\" : \"BUILD_ID\",                \
-                           \"value\" : \"$BUILD_ID\"               \
-                         },                                        \
-                         {                                         \
-                           \"name\" : \"BUILD_NAME\",              \
-                           \"value\" : \"$BUILD_NAME\"             \
-                         },                                        \
-                         {                                         \
-                           \"name\" : \"BUILD_JOB_NAME\",          \
-                           \"value\" : \"$BUILD_JOB_NAME\"         \
-                         },                                        \
-                         {                                         \
-                           \"name\" : \"BUILD_PIPELINE_NAME\",     \
-                           \"value\" : \"$BUILD_PIPELINE_NAME\"    \
-                         },                                        \
-                         {                                         \
-                           \"name\" : \"ATC_EXTERNAL_URL\",        \
-                           \"value\" : \"$ATC_EXTERNAL_URL\"       \
-                         },                                        \
                          {                                         \
                            \"name\" : \"URL\",                     \
                            \"value\" : \"$BUILD_URL\"              \
@@ -56,5 +24,5 @@ data="{                                                            \
                        ]                                           \
                      }"
 
-echo $data >$destination/out.json
+echo $data >$output_dir/out.json
 echo $data >&3
