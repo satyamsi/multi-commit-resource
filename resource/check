@@ -1,5 +1,9 @@
 #!/bin/sh
 
-. $( dirname "$0" )/common.sh
+# When someone does a check, we always have a new version
+exec 3>&1
+exec 1>&2
 
-display_build
+printf -v VERSION "%06d" $RANDOM
+
+echo "[ { \"ref\" : \"$VERSION\" } ]" | jq >&3

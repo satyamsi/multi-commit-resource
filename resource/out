@@ -1,5 +1,32 @@
 #!/bin/sh
 
-. $( dirname "$0" )/common.sh
+# When someone does a check, we always have a new version
+exec 3>&1
+exec 1>&2
 
-display_build
+printf -v VERSION "%06d" $RANDOM
+
+echo "{                                                            \
+        \"version\" : { \"ref\" : \"$VERSION\" },                  \
+        \"metadata\" : [                                           \
+                         {                                         \
+                           \"name\" : \"BUILD_ID\",                \
+                           \"value\" : \"$BUILD_ID\"               \
+                         },                                        \
+                         {                                         \
+                           \"name\" : \"BUILD_NAME\",              \
+                           \"value\" : \"$BUILD_NAME\"             \
+                         },                                        \
+                         {                                         \
+                           \"name\" : \"BUILD_JOB_NAME\",          \
+                           \"value\" : \"$BUILD_JOB_NAME\"         \
+                         },                                        \
+                         {                                         \
+                           \"name\" : \"BUILD_PIPELINE_NAME\",     \
+                           \"value\" : \"$BUILD_PIPELINE_NAME\"    \
+                         },                                        \
+                         {                                         \
+                           \"name\" : \"ATC_EXTERNAL_URL\",        \
+                           \"value\" : \"$ATC_EXTERNAL_URL\"       \
+                         },                                        \
+                       ] }" | jq >&3
