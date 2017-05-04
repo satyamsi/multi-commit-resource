@@ -13,13 +13,22 @@ fi
 
 mkdir -p $destination
 
-VERSION="000AAA"
+export VERSION="000AAA"
+export BUILD_URL=$ATC_EXTERNAL_URL"/teams/"$BUILD_TEAM_NAME"/pipelines/"$BUILD_PIPELINE_NAME"/jobs/"$BUILD_JOB_NAME"/builds/"$BUILD_ID
+
+echo "Out: ENV"
+env
+echo "Out: ENV"
 
 echo "Out: destination:" $destination " version:" $VERSION " ::"
 
 data="{                                                            \
         \"version\" : { \"ref\" : \"$VERSION\" },                  \
         \"metadata\" : [                                           \
+                         {                                         \
+                           \"name\" : \"BUILD_TEAM_NAME\",         \
+                           \"value\" : \"$BUILD_TEAM_NAME\"        \
+                         },                                        \
                          {                                         \
                            \"name\" : \"BUILD_ID\",                \
                            \"value\" : \"$BUILD_ID\"               \
@@ -39,6 +48,10 @@ data="{                                                            \
                          {                                         \
                            \"name\" : \"ATC_EXTERNAL_URL\",        \
                            \"value\" : \"$ATC_EXTERNAL_URL\"       \
+                         },                                        \
+                         {                                         \
+                           \"name\" : \"URL\",                     \
+                           \"value\" : \"$BUILD_URL\"              \
                          }                                         \
                        ]                                           \
                      }"
