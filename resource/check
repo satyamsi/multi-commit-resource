@@ -4,6 +4,15 @@
 exec 3>&1
 exec 1>&2
 
-printf -v VERSION "%06d" $RANDOM
+export TMPDIR=${TMPDIR:-/tmp}
+payload=$TMPDIR/multi-commit-resource
+cat > $payload <&0
 
-echo "[ { \"ref\" : \"$VERSION\" } ]" | jq >&3
+VERSION="000AAA"
+
+echo "Check:" $VERSION
+echo "Check:" $(cat $payload)
+
+data="[ { \"ref\" : \"$VERSION\" } ]"
+
+echo $data >&3

@@ -4,9 +4,20 @@
 exec 3>&1
 exec 1>&2
 
-printf -v VERSION "%06d" $RANDOM
+destination=$1
 
-echo "{                                                            \
+if [ -z "$destination" ]; then
+  echo "usage: $0 <path/to/destination>" >&2
+  exit 1
+fi
+
+mkdir -p $destination
+
+VERSION="000AAA"
+
+echo " In: destination:" $destination " version:" $VERSION " ::"
+
+data="{                                                            \
         \"version\" : { \"ref\" : \"$VERSION\" },                  \
         \"metadata\" : [                                           \
                          {                                         \
@@ -28,5 +39,9 @@ echo "{                                                            \
                          {                                         \
                            \"name\" : \"ATC_EXTERNAL_URL\",        \
                            \"value\" : \"$ATC_EXTERNAL_URL\"       \
-                         },                                        \
-                       ] }" | jq >&3
+                         }                                         \
+                       ]                                           \
+                     }"
+
+echo $data >$destination/in.json
+echo $data >&3
