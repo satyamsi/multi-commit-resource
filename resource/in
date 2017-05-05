@@ -10,6 +10,12 @@ if [ -z "$output_dir" ]; then
   exit 1
 fi
 
+export TMPDIR=${TMPDIR:-/tmp}
+payload=$TMPDIR/multi-commit-resource
+cat > $payload <&0
+
+cat $payload
+
 mkdir -p $output_dir
 
 export BUILD_URL=$ATC_EXTERNAL_URL"/teams/"$BUILD_TEAM_NAME"/pipelines/"$BUILD_PIPELINE_NAME"/jobs/"$BUILD_JOB_NAME"/builds/"$BUILD_NAME
