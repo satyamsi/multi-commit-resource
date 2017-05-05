@@ -7,6 +7,7 @@ export TMPDIR=${TMPDIR:-/tmp}
 payload=$TMPDIR/multi-commit-resource
 cat > $payload <&0
 
+# Do the needful
 data="[ { \"ref\" : \"000000\" } ]"
 
 echo $data >&3

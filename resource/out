@@ -3,10 +3,10 @@
 exec 3>&1
 exec 1>&2
 
-output_dir=$1
+input_dir=$1
 
-if [ -z "$output_dir" ]; then
-  echo "usage: $0 <output-directory>" >&2
+if [ -z "$input_dir" ]; then
+  echo "usage: $0 <input-directory>" >&2
   exit 1
 fi
 
@@ -14,9 +14,24 @@ export TMPDIR=${TMPDIR:-/tmp}
 payload=$TMPDIR/multi-commit-resource
 cat > $payload <&0
 
-cat $payload
+GITHUB_TOKEN=$(cat $payload | jq '.source.access_token')
+GITHUB_USERNAME=$(cat $payload | jq '.source.username')
+GITHUB_PASSWORD=$(cat $payload | jq '.source.password')
+TRIGGER_FILE=$(cat $payload | jq '.params.trigger')
 
-mkdir -p $output_dir
+# Check all required inputs are present
+: ${GITHUB_TOKEN?"Need to set access_token"}
+: ${GITHUB_USERNAME?"Need to set username"}
+: ${GITHUB_PASSWORD?"Need to set password"}
+: ${TRIGGER_FILE?"No trigger parameter provided"}
+
+# Check input file exists
+if [ ! -f ${input_dir}/${TRIGGER_FILE} ]; then
+  echo "Bad trigger file: ${input_dir}/${TRIGGER_FILE}"
+  exit 1
+fi
+
+cat ${input_dir}/${TRIGGER_FILE}
 
 export BUILD_URL=$ATC_EXTERNAL_URL"/teams/"$BUILD_TEAM_NAME"/pipelines/"$BUILD_PIPELINE_NAME"/jobs/"$BUILD_JOB_NAME"/builds/"$BUILD_NAME
 
